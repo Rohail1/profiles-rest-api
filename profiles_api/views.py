@@ -1,8 +1,12 @@
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.response import Response
-from profiles_api.serializers import HelloSerializer
+from rest_framework.authentication import TokenAuthentication
+from rest_framework import filters
+from profiles_api.serializers import HelloSerializer, UserProfileSerializer
+from profiles_api.models import UserProfile
+from profiles_api.permissions import UpdateOwnProfilePermission
 
 
 class HelloApiView(APIView):
@@ -104,3 +108,15 @@ class HelloViewSet(ViewSet):
         """Handling Delete to an object"""
         return Response({'method': "This is destory Request"},
                         status=status.HTTP_200_OK)
+
+
+
+class UserProfileViewSet(ModelViewSet):
+    """Handle creating and updating Profiles"""
+
+    serializer_class = UserProfileSerializer
+    queryset = UserProfile.objects.all()
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (UpdateOwnProfilePermission,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('email', 'name',)
