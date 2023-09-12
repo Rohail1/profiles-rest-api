@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from profiles_api.serializers import HelloSerializer
 
@@ -22,7 +23,7 @@ class HelloApiView(APIView):
 
 
     def post(self, request):
-        """Create a Hello Message with out Name"""
+        """Create a Hello Message with our Name"""
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
@@ -48,4 +49,58 @@ class HelloApiView(APIView):
     def delete(self, request, pk=None):
         """Handling Delete to an object"""
         return Response({'method': "This is Delete Request"},
+                        status=status.HTTP_200_OK)
+
+
+class HelloViewSet(ViewSet):
+    """Test API View Set"""
+
+    serializer_class = HelloSerializer
+
+    def list(self, request):
+        """Returns a list of APIView Features """
+        an_apiview = [
+            "Uses Actions as a function (list, create, retrieve, update, partial update"
+            ", destory)",
+            "Provides more functionality with less code",
+            'Gives you the most control over your application logic',
+            'Auto-mapped to URLs',
+        ]
+        return Response({'message': 'Helloo !!', 'data': an_apiview},
+                        status=status.HTTP_200_OK)
+
+
+    def create(self, request):
+        """Create a Hello Message with our Name"""
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            name = serializer.validated_data.get('name')
+            return Response({'message': f'Helloo {name}!!'},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({'errors': serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+    def retrieve(self, request, pk=None):
+        """Handling Get to an object"""
+        return Response({'method': "This is retrieve Request"},
+                        status=status.HTTP_200_OK)
+
+
+    def update(self, request, pk=None):
+        """Handling Update to an object"""
+        return Response({'method': "This is update Request"},
+                        status=status.HTTP_200_OK)
+
+    def partial_update(self, request, pk=None):
+        """Handling partial update to an object"""
+        return Response({'method': "This is partial_update Request"},
+                        status=status.HTTP_200_OK)
+
+
+    def destroy(self, request, pk=None):
+        """Handling Delete to an object"""
+        return Response({'method': "This is destory Request"},
                         status=status.HTTP_200_OK)
