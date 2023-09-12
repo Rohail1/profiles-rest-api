@@ -4,6 +4,9 @@ from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
+
 from profiles_api.serializers import HelloSerializer, UserProfileSerializer
 from profiles_api.models import UserProfile
 from profiles_api.permissions import UpdateOwnProfilePermission
@@ -110,7 +113,6 @@ class HelloViewSet(ViewSet):
                         status=status.HTTP_200_OK)
 
 
-
 class UserProfileViewSet(ModelViewSet):
     """Handle creating and updating Profiles"""
 
@@ -120,3 +122,8 @@ class UserProfileViewSet(ModelViewSet):
     permission_classes = (UpdateOwnProfilePermission,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('email', 'name',)
+
+
+class UserLoginApiView(ObtainAuthToken):
+    """Handle Creating User Authentication tokens"""
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
